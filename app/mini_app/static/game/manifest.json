@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "theme": {
+    "accent": "#FF4028",
+    "accentDim": "#8F2518",
+    "bg": "#000000",
+    "text": "#F0E6E0"
+  },
+  "lottie": {
+    "statusHero": "",
+    "labDnaFoot": "",
+    "clickerCore": "",
+    "fountainBackdrop": "",
+    "treeBackdrop": ""
+  },
+  "images": {
+    "worldMapOverlay": "",
+    "statusHeroFallback": ""
+  },
+  "progression": {
+    "remoteConfigUrl": null,
+    "remoteConfigPollSeconds": 0,
+    "sponsorSlots": [
+      {
+        "id": "status.footer",
+        "enabled": false,
+        "kind": "banner",
+        "assetUrl": "",
+        "href": "",
+        "label": ""
+      },
+      {
+        "id": "lab.economy",
+        "enabled": false,
+        "kind": "banner",
+        "assetUrl": "",
+        "href": "",
+        "label": ""
+      },
+      {
+        "id": "top.inline",
+        "enabled": false,
+        "kind": "html",
+        "html": ""
+      }
+    ],
+    "paidTracks": [
+      {
+        "id": "example_sponsor_bundle",
+        "enabled": false,
+        "label": "",
+        "sku": "",
+        "perks": ["ui.badge", "economy.slot"]
+      }
+    ]
+  }
+}

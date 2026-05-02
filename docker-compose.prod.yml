@@ -1,0 +1,139 @@
+# Продакшен на своём VPS: готовый образ GHCR, без docker build на сервере.
+#
+# Подготовка:
+#   1) Файл .env в этой же директории (BOT_TOKEN, MINI_APP_PUBLIC_URL, POSTGRES_* … см. .env.example).
+#      DATABASE_URL/REDIS/CELERY в .env для локальной разработки могут указывать на localhost —
+#      в контейнеры всё равно подставятся значения из environment ниже (postgres, redis, rabbitmq).
+#   2) docker login ghcr.io (если образ приватный)
+#
+# Запуск / обновление:
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Остановка:
+#   docker compose -f docker-compose.prod.yml down
+
+x-app-image: &app_image
+  image: ${CONTACT_IMAGE:-ghcr.io/ephemeral172/contact:latest}
+  pull_policy: always
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-virus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-virus}
+      POSTGRES_DB: ${POSTGRES_DB:-virus}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-virus} -d ${POSTGRES_DB:-virus}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+
+  migrate:
+    <<: *app_image
+    entrypoint: []
+    command: >
+      sh -c "python /app/scripts/wait_for_port.py postgres 5432 && alembic upgrade head"
+    environment:
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    <<: *app_image
+    entrypoint: []
+    command: /app/scripts/start-api.sh
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  bot:
+    <<: *app_image
+    entrypoint: []
+    command: /app/scripts/start-bot.sh
+    ports:
+      - "127.0.0.1:8080:8080"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  worker:
+    <<: *app_image
+    entrypoint: []
+    command: celery -A worker.celery_app worker --loglevel=info --pool=solo
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  beat:
+    <<: *app_image
+    entrypoint: []
+    command: celery -A worker.celery_app beat --loglevel=info
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+
+volumes:
+  pg_data:

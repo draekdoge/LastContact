@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦠 ВИРУС — Bot UI Screens</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #FF2D2D;
+    --red-dim: #C0392B;
+    --orange: #FF6B00;
+    --green: #00FF88;
+    --green-dim: #00C96B;
+    --yellow: #FFE000;
+    --purple: #BF00FF;
+    --cyan: #00E5FF;
+    --bg: #0A0A0A;
+    --bg2: #111111;
+    --bg3: #181818;
+    --bg4: #1E1E1E;
+    --border: #2A2A2A;
+    --text: #E8E8E8;
+    --text-dim: #888;
+    --text-dimmer: #444;
+    --mono: 'Space Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 40% at 20% 10%, rgba(255,45,45,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(0,229,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-title {
+    font-family: var(--display);
+    font-size: 52px;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-align: center;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 0 40px rgba(255,45,45,0.4);
+  }
+  .page-subtitle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── PHONE FRAME ── */
+  .screen-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .screen-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+    padding-left: 4px;
+  }
+  .screen-label span {
+    color: var(--red);
+  }
+
+  .phone {
+    background: #1A1A1C;
+    border-radius: 36px;
+    border: 1.5px solid #333;
+    overflow: hidden;
+    box-shadow: 
+      0 0 0 1px #0A0A0A,
+      0 30px 80px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative;
+  }
+
+  .phone-bar {
+    background: #111;
+    padding: 14px 20px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #222;
+  }
+  .phone-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red-dim), #500);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .phone-info { flex: 1; }
+  .phone-name {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    line-height: 1;
+  }
+  .phone-status {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  .phone-body {
+    padding: 12px 16px 16px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* ── MESSAGE BUBBLE ── */
+  .msg {
+    background: var(--bg3);
+    border-radius: 4px 16px 16px 16px;
+    padding: 12px 14px;
+    position: relative;
+    border: 1px solid var(--border);
+    animation: msgIn 0.3s ease forwards;
+  }
+  .msg::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -6px;
+    width: 0; height: 0;
+    border-top: 8px solid var(--border);
+    border-left: 6px solid transparent;
+  }
+  .msg::after {
+    content: '';
+    position: absolute;
+    top: 1px; left: -4px;
+    width: 0; height: 0;
+    border-top: 7px solid var(--bg3);
+    border-left: 5px solid transparent;
+  }
+
+  .msg-time {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dimmer);
+    text-align: right;
+    margin-top: 6px;
+  }
+
+  /* ── MESSAGE CONTENT ATOMS ── */
+  .msg-header {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .msg-header.red { color: var(--red); }
+  .msg-header.green { color: var(--green); }
+  .msg-header.orange { color: var(--orange); }
+  .msg-header.purple { color: var(--purple); }
+  .msg-header.cyan { color: var(--cyan); }
+  .msg-header.yellow { color: var(--yellow); }
+
+  .msg-divider {
+    color: var(--text-dimmer);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin: 0 0 8px;
+  }
+
+  .msg-body {
+    font-family: var(--body);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .msg-body b { color: #fff; font-weight: 700; }
+  .msg-body .hl-red { color: var(--red); font-weight: 700; }
+  .msg-body .hl-green { color: var(--green); }
+  .msg-body .hl-orange { color: var(--orange); }
+  .msg-body .hl-yellow { color: var(--yellow); }
+  .msg-body .hl-cyan { color: var(--cyan); }
+  .msg-body .hl-dim { color: var(--text-dim); }
+
+  .msg-spacer { height: 8px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    margin: 10px 0 4px;
+  }
+  .progress-track {
+    height: 6px;
+    background: #222;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    position: relative;
+  }
+  .progress-fill.full { 
+    background: linear-gradient(90deg, var(--red-dim), var(--red));
+    width: 100%;
+    box-shadow: 0 0 8px var(--red);
+  }
+  .progress-fill.high { 
+    background: linear-gradient(90deg, var(--orange), var(--yellow));
+    width: 72%;
+    box-shadow: 0 0 8px var(--orange);
+  }
+  .progress-fill.mid { 
+    background: linear-gradient(90deg, var(--yellow), var(--orange));
+    width: 42%;
+  }
+  .progress-fill.low { 
+    background: linear-gradient(90deg, var(--red-dim), var(--red));
+    width: 15%;
+    animation: pulse-bar 1s ease-in-out infinite alternate;
+  }
+  .progress-fill.immune {
+    background: linear-gradient(90deg, #006644, var(--green));
+    width: 100%;
+    box-shadow: 0 0 8px var(--green);
+  }
+  .progress-fill.zombie {
+    background: linear-gradient(90deg, #1a0033, var(--purple));
+    width: 100%;
+    box-shadow: 0 0 8px var(--purple);
+  }
+  @keyframes pulse-bar {
+    from { box-shadow: 0 0 4px var(--red); }
+    to { box-shadow: 0 0 16px var(--red), 0 0 30px rgba(255,45,45,0.3); }
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+  }
+  .progress-pct {
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  .progress-pct.red { color: var(--red); }
+  .progress-pct.orange { color: var(--orange); }
+  .progress-pct.green { color: var(--green); }
+  .progress-pct.purple { color: var(--purple); }
+
+  /* ── TIMER ── */
+  .timer-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
+  }
+  .timer-icon { font-size: 14px; }
+  .timer-val {
+    font-family: var(--mono);
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  .timer-val.critical { 
+    color: var(--red); 
+    font-size: 18px;
+    animation: blink 0.8s step-end infinite;
+  }
+  .timer-val.warning { color: var(--orange); font-size: 16px; }
+  .timer-val.ok { color: var(--yellow); font-size: 16px; }
+  .timer-val.safe { color: var(--green); font-size: 16px; }
+  @keyframes blink {
+    50% { opacity: 0.3; }
+  }
+  .timer-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 1px;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: 8px 0;
+  }
+  .stat-box {
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .stat-val.red { color: var(--red); }
+  .stat-val.orange { color: var(--orange); }
+  .stat-val.green { color: var(--green); }
+  .stat-val.purple { color: var(--purple); }
+  .stat-val.cyan { color: var(--cyan); }
+  .stat-val.yellow { color: var(--yellow); }
+  .stat-key {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+  }
+
+  /* ── LINK BOX ── */
+  .link-box {
+    background: #0D1A0D;
+    border: 1px solid #1E3A1E;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 8px 0;
+  }
+  .link-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--green-dim);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .link-url {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    word-break: break-all;
+    line-height: 1.4;
+  }
+
+  .link-box-red {
+    background: #1A0505;
+    border: 1px solid #3A1010;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 8px 0;
+  }
+  .link-box-red .link-label { color: #C04040; }
+  .link-box-red .link-url { color: var(--red); }
+
+  /* ── BADGE ── */
+  .badge-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 6px 0;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .badge.red { background: rgba(255,45,45,0.15); color: var(--red); border: 1px solid rgba(255,45,45,0.3); }
+  .badge.green { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.25); }
+  .badge.orange { background: rgba(255,107,0,0.15); color: var(--orange); border: 1px solid rgba(255,107,0,0.3); }
+  .badge.purple { background: rgba(191,0,255,0.15); color: var(--purple); border: 1px solid rgba(191,0,255,0.3); }
+  .badge.cyan { background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid rgba(0,229,255,0.25); }
+  .badge.yellow { background: rgba(255,224,0,0.1); color: var(--yellow); border: 1px solid rgba(255,224,0,0.25); }
+
+  /* ── CHAIN VIZ ── */
+  .chain {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 2;
+    margin: 6px 0;
+  }
+  .chain .you { color: var(--red); font-weight: 700; }
+  .chain .infected { color: var(--orange); }
+  .chain .zombie { color: var(--purple); }
+  .chain .immune { color: var(--green); }
+
+  /* ── KEYBOARD BUTTONS ── */
+  .keyboard {
+    background: #111;
+    border-top: 1px solid #222;
+    padding: 10px 12px 14px;
+    display: grid;
+    gap: 6px;
+  }
+  .kb-row {
+    display: grid;
+    gap: 6px;
+  }
+  .kb-row.cols-2 { grid-template-columns: 1fr 1fr; }
+  .kb-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .kb-row.cols-1 { grid-template-columns: 1fr; }
+  
+  .kb-btn {
+    background: var(--bg4);
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    font-family: var(--body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.2;
+  }
+  .kb-btn:hover { background: #252525; border-color: #555; }
+  .kb-btn.primary {
+    background: linear-gradient(135deg, #8B0000, var(--red-dim));
+    border-color: var(--red);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 0 16px rgba(255,45,45,0.25);
+  }
+  .kb-btn.green-btn {
+    background: linear-gradient(135deg, #004d2e, #006644);
+    border-color: var(--green-dim);
+    color: var(--green);
+    font-weight: 700;
+  }
+  .kb-btn.ghost {
+    background: transparent;
+    border-color: #2A2A2A;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+
+  /* ── INLINE KEYBOARD (reply markup) ── */
+  .inline-kb {
+    padding: 8px 14px 12px;
+    display: grid;
+    gap: 5px;
+  }
+  .inline-row {
+    display: grid;
+    gap: 5px;
+  }
+  .inline-row.c1 { grid-template-columns: 1fr; }
+  .inline-row.c2 { grid-template-columns: 1fr 1fr; }
+  .inline-row.c3 { grid-template-columns: 1fr 1fr 1fr; }
+  
+  .inline-btn {
+    background: #1D1D1D;
+    border: 1px solid #2E2E2E;
+    border-radius: 8px;
+    padding: 9px 10px;
+    text-align: center;
+    font-family: var(--body);
+    font-size: 13px;
+    font-weight: 600;
+    color: #ddd;
+    cursor: pointer;
+  }
+  .inline-btn.hot {
+    background: rgba(255,45,45,0.12);
+    border-color: rgba(255,45,45,0.35);
+    color: #fff;
+    font-weight: 700;
+  }
+  .inline-btn.cool {
+    background: rgba(0,255,136,0.08);
+    border-color: rgba(0,255,136,0.25);
+    color: var(--green);
+  }
+  .inline-btn.warn {
+    background: rgba(255,107,0,0.1);
+    border-color: rgba(255,107,0,0.3);
+    color: var(--orange);
+  }
+  .inline-btn.info {
+    background: rgba(0,229,255,0.08);
+    border-color: rgba(0,229,255,0.2);
+    color: var(--cyan);
+  }
+
+  /* ── EVENT NOTIFICATION ── */
+  .event-banner {
+    background: linear-gradient(135deg, rgba(191,0,255,0.15), rgba(255,45,45,0.1));
+    border: 1px solid rgba(191,0,255,0.4);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 6px 0;
+  }
+  .event-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .event-desc {
+    font-family: var(--body);
+    font-size: 13px;
+    color: #ccc;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    font-family: var(--display);
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin: 50px 0 20px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 4px;
+    position: relative;
+    z-index: 1;
+    border-left: 3px solid var(--red);
+    padding-left: 14px;
+  }
+
+  /* ── MUTATION TAG ── */
+  .mutation-list {
+    margin: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mutation-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .mutation-item .mut-icon { font-size: 12px; }
+  .mutation-item .mut-name { color: var(--orange); }
+  .mutation-item .mut-effect { color: var(--text-dimmer); }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Copy text section */
+  .copy-section {
+    max-width: 1400px;
+    margin: 50px auto 0;
+    position: relative;
+    z-index: 1;
+  }
+  .copy-title {
+    font-family: var(--display);
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    border-left: 3px solid var(--red);
+    padding-left: 14px;
+    margin-bottom: 24px;
+  }
+  .copy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+  .copy-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .copy-card-header {
+    background: var(--bg4);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .copy-card-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+  }
+  .copy-card-body {
+    padding: 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .copy-card-body .line-red { color: var(--red); }
+  .copy-card-body .line-green { color: var(--green); }
+  .copy-card-body .line-orange { color: var(--orange); }
+  .copy-card-body .line-dim { color: var(--text-dimmer); }
+  .copy-card-body .line-cyan { color: var(--cyan); }
+  .copy-card-body .line-yellow { color: var(--yellow); }
+  .copy-card-body .line-purple { color: var(--purple); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">🦠 ВИРУС</h1>
+<p class="page-subtitle">BOT UI SCREENS — MESSAGE COPY & KEYBOARD LAYOUTS</p>
+<p class="page-subtitle" style="margin-top:-44px;margin-bottom:48px;letter-spacing:2px">Канонический файл: <span style="color:#888">virus_bot_ui.html</span> · <span style="color:#888">visual_bot_ui.html</span> — редирект сюда</p>
+
+<!-- ═══════════════════════════════════════ SCREENS ═══════════════ -->
+
+<div class="section-header">ЭКРАНЫ СОСТОЯНИЙ</div>
+
+<div class="screens-grid">
+
+  <!-- SCREEN 1: START / FIRST INFECTION -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>01</span> — /start · первое заражение</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">☣️</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● ONLINE · STRAIN X-77</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header red">☣️ &nbsp;ШТАММ X-77 · ИНФИЦИРОВАН</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Поздравляю. Ты только что подхватил нечто,<br>от чего нет вакцины.<br><br>
+            У тебя <span class="hl-red">60 часов</span> пока не началась деградация.<br>
+            Единственный способ выжить — <b>распространить штамм</b><br>как можно быстрее.
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-track"><div class="progress-fill full"></div></div>
+            <div class="progress-label">
+              <span class="progress-pct red">▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%</span>
+              <span class="progress-pct red">VITA</span>
+            </div>
+          </div>
+          <div class="timer-row">
+            <span class="timer-icon">⏱</span>
+            <span class="timer-val safe">11:59:42</span>
+            <span class="timer-label">ДО РАСПАДА</span>
+          </div>
+          <div class="badge-row">
+            <span class="badge red">ЗАРАЖЁН</span>
+            <span class="badge orange">ЦЕПОЧКА #1</span>
+            <span class="badge cyan">РАНГ: НОСИТЕЛЬ</span>
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn hot">☣️ Передать штамм</div>
+        </div>
+        <div class="inline-row c3">
+          <div class="inline-btn">📊 Мир</div>
+          <div class="inline-btn">🧬 Мутации</div>
+          <div class="inline-btn">🏆 Топ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: MAIN DASHBOARD (INFECTED) -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>02</span> — дашборд заражённого · 3 часа</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">☣️</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● STRAIN ACTIVE</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header orange">🧫 &nbsp;СТАТУС · ШТАММ АКТИВЕН</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Штамм распространяется. Твоя цепочка<br>
+            охватила <span class="hl-orange">3 носителя</span>. Неплохо — но вирус<br>
+            не спит. Таймер тоже.
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-track"><div class="progress-fill high"></div></div>
+            <div class="progress-label">
+              <span class="progress-pct orange">▓▓▓▓▓▓▓▓▓░░░░░ 72%</span>
+              <span class="progress-pct orange">VITA</span>
+            </div>
+          </div>
+          <div class="timer-row">
+            <span class="timer-icon">⏱</span>
+            <span class="timer-val warning">08:34:17</span>
+            <span class="timer-label">ДО РАСПАДА</span>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-val orange">3</div>
+              <div class="stat-key">ЗАРАЖЕНО</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val red">0</div>
+              <div class="stat-key">ПОТЕРЯНО</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val cyan">#8 241</div>
+              <div class="stat-key">МИР. РАНГ</div>
+            </div>
+          </div>
+          <div class="msg-time">обновлено 3 мин назад</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn hot">☣️ Передать штамм</div>
+        </div>
+        <div class="inline-row c3">
+          <div class="inline-btn">📊 Мир</div>
+          <div class="inline-btn">🧬 Мутации</div>
+          <div class="inline-btn">🏆 Топ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: CRITICAL - LOW TIMER -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>03</span> — критический таймер · 28 мин</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">☣️</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">⚠ CRITICAL ALERT</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header red">💀 &nbsp;КРИТИЧЕСКИЙ УРОВЕНЬ</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Слышишь? Это твои клетки.<br><br>
+            У тебя почти не осталось времени.<br>
+            Ещё одно заражение даст <span class="hl-red">+4 часа</span>.<br>
+            Или ты станешь <b>следующим зомби</b> в статистике.
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-track"><div class="progress-fill low"></div></div>
+            <div class="progress-label">
+              <span class="progress-pct red">▓▓░░░░░░░░░░░░ 15%</span>
+              <span class="progress-pct red">VITA</span>
+            </div>
+          </div>
+          <div class="timer-row">
+            <span class="timer-icon">🚨</span>
+            <span class="timer-val critical">00:28:03</span>
+            <span class="timer-label">ОСТАЛОСЬ</span>
+          </div>
+          <div class="badge-row">
+            <span class="badge red">КРИТИЧНО</span>
+            <span class="badge orange">3 ЗАРАЖЕНО</span>
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn hot">🚨 ЗАРАЗИТЬ ПРЯМО СЕЙЧАС</div>
+        </div>
+        <div class="inline-row c2">
+          <div class="inline-btn warn">⚡ Ускорить за Stars</div>
+          <div class="inline-btn ghost">📊 Статистика</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: TRANSMIT / SHARE LINK -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>04</span> — передача вируса · ссылка</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">☣️</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● TRANSMITTING</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header red">🧬 &nbsp;КОД РАСПРОСТРАНЕНИЯ · АКТИВЕН</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Биологический пакет собран.<br>
+            Доставь его <span class="hl-red">любым способом</span>.<br><br>
+            Нажми <b>«🧬 Мои контакты»</b> ниже<br>
+            или скопируй ссылку вручную.<br><br>
+            Каждый открывший — <span class="hl-orange">+4 часа</span> тебе.<br>
+            Каждый просроченный — минус один выживший.
+          </div>
+          <div class="link-box-red">
+            <div class="link-label">▸ ПЕРСОНАЛЬНЫЙ ШТАММ-ЛИНК</div>
+            <div class="link-url">t.me/LastContact_bot?start=68199c5f</div>
+          </div>
+          <div class="badge-row">
+            <span class="badge orange">+4 Ч ЗА КЛИК</span>
+            <span class="badge red">ТОЛЬКО УНИКАЛЬНЫЕ</span>
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn hot">🧬 Мои контакты (нативный шер)</div>
+        </div>
+        <div class="inline-row c2">
+          <div class="inline-btn">📋 Скопировать ссылку</div>
+          <div class="inline-btn ghost">↩ Назад</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: NEW INFECTION EVENT -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>05</span> — пуш: кто-то заразился</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">☣️</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● NEW CARRIER DETECTED</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header green">✅ &nbsp;ШТАММ ПРИНЯТ · НОВЫЙ НОСИТЕЛЬ</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Ещё один.<br><br>
+            <b>@alex_kr</b> открыл твою ссылку и<br>
+            уже <span class="hl-red">заражён</span>. Твоя цепочка растёт.<br><br>
+            <span class="hl-green">+3:00:00</span> к твоему таймеру.<br>
+            Итого носителей в ветке: <span class="hl-orange">4</span>
+          </div>
+          <div class="timer-row">
+            <span class="timer-icon">⏱</span>
+            <span class="timer-val ok">11:12:44</span>
+            <span class="timer-label">ОБНОВЛЕНО</span>
+          </div>
+          <div class="chain">
+            <span class="you">◉ ТЫ</span><br>
+            &nbsp;└─ <span class="infected">◉ @masha_v</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;└─ <span class="infected">◉ @alex_kr</span> ← <span style="color:var(--green);font-size:9px">НОВЫЙ</span>
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c2">
+          <div class="inline-btn hot">☣️ Заразить ещё</div>
+          <div class="inline-btn cool">🌿 Моё дерево</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: ZOMBIE STATE -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>06</span> — превращение в зомби</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">💀</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">☠ NECROSIS STAGE</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header purple">💀 &nbsp;ДЕГРАДАЦИЯ ЗАВЕРШЕНА · ЗОМБИ</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Время вышло.<br><br>
+            Ты больше не человек — ты <b>зомби</b>.<br>
+            Вирус управляет тобой хаотично.<br><br>
+            Но игра не закончена.<br>
+            Заразь ещё <span class="hl-purple">5 человек</span> в этом<br>
+            состоянии — и ты <span class="hl-orange">вернёшься</span>.
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-track"><div class="progress-fill zombie"></div></div>
+            <div class="progress-label">
+              <span class="progress-pct purple">█████████████ НЕКРОЗ</span>
+              <span class="progress-pct purple">ЗОМБИ</span>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-val purple">0/5</div>
+              <div class="stat-key">ДО ВОЗВРАТА</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val red">50%</div>
+              <div class="stat-key">ЭФФЕКТ.</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val orange">4</div>
+              <div class="stat-key">ЦЕПОЧКА</div>
+            </div>
+          </div>
+          <div class="badge-row">
+            <span class="badge purple">ЗОМБИ</span>
+            <span class="badge orange">ХАОТИЧНОЕ ЗАРАЖЕНИЕ</span>
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn" style="background:rgba(191,0,255,0.15);border-color:rgba(191,0,255,0.4);color:var(--purple);font-weight:700">💀 Заразить как зомби</div>
+        </div>
+        <div class="inline-row c2">
+          <div class="inline-btn ghost">📊 Статистика</div>
+          <div class="inline-btn ghost">🏆 Топ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 7: IMMUNITY SIDE -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>07</span> — переход в Иммунитет</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">🛡️</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">🛡 IMMUNE FACTION</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header green">🛡️ &nbsp;ФРАКЦИЯ ИММУНИТЕТА · ПРИНЯТ</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Ты сделал выбор.<br><br>
+            Пока другие <span class="hl-red">распространяют хаос</span>,<br>
+            ты будешь <span class="hl-green">строить барьеры</span>.<br><br>
+            Таймера больше нет.<br>
+            Зато есть миссия: <b>остановить волну</b><br>
+            и войти в историю как иммунный герой.
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-track"><div class="progress-fill immune"></div></div>
+            <div class="progress-label">
+              <span class="progress-pct green">▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ИММУНЕН</span>
+              <span class="progress-pct green">100%</span>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-val green">0</div>
+              <div class="stat-key">ВЫЛЕЧЕНО</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val cyan">×1.5</div>
+              <div class="stat-key">К POINTS</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val yellow">∞</div>
+              <div class="stat-key">ТАЙМЕР</div>
+            </div>
+          </div>
+          <div class="badge-row">
+            <span class="badge green">ИММУНЕН</span>
+            <span class="badge cyan">×1.5 POINTS</span>
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn cool">💊 Вылечить носителя</div>
+        </div>
+        <div class="inline-row c3">
+          <div class="inline-btn">📊 Мир</div>
+          <div class="inline-btn">🧬 Способности</div>
+          <div class="inline-btn">🏆 Топ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 8: WORLD STATS -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>08</span> — статистика мира</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">🌍</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● LIVE DATA · UPDATING</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header cyan">📡 &nbsp;ГЛОБАЛЬНАЯ СИМУЛЯЦИЯ · LIVE</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-val red">48 221</div>
+              <div class="stat-key">ЗАРАЖЕНО</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val purple">3 847</div>
+              <div class="stat-key">ЗОМБИ</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val green">2 103</div>
+              <div class="stat-key">ВЫЛЕЧЕНО</div>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-val orange">1 241</div>
+              <div class="stat-key">ЗА ЧАС</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val yellow">R=2.4</div>
+              <div class="stat-key">РЕПРОД.</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val cyan">12 991</div>
+              <div class="stat-key">ОНЛАЙН</div>
+            </div>
+          </div>
+          <div class="msg-body" style="margin-top:8px">
+            <span class="hl-dim">Вирус:</span> <span class="hl-red">█████████░ 78%</span><br>
+            <span class="hl-dim">Иммун.:</span> <span class="hl-green">██░░░░░░░░ 22%</span>
+          </div>
+          <div class="msg-body" style="margin-top:8px;font-size:13px">
+            Твой вклад: <span class="hl-orange">0.008% мира</span><br>
+            Твоя цепочка: <span class="hl-red">4 носителя</span><br>
+            Мир. ранг: <span class="hl-cyan">#8 241 из 54 171</span>
+          </div>
+          <div class="msg-time">обновлено 28 сек назад</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c2">
+          <div class="inline-btn hot">☣️ Заразить</div>
+          <div class="inline-btn info">🌐 Топ стран</div>
+        </div>
+        <div class="inline-row c2">
+          <div class="inline-btn">🏆 Рейтинг</div>
+          <div class="inline-btn ghost">↩ Назад</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 9: GLOBAL EVENT -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>09</span> — глобальное событие: мутация штамма</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">☣️</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">🔴 GLOBAL EVENT · ACTIVE</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="event-banner">
+            <div class="event-title">⚡ ГЛОБАЛЬНОЕ СОБЫТИЕ · 05:42:00</div>
+            <div class="event-desc">Штамм мутировал. Всем заражённым —2 ч к таймеру. Скорость заражения ×1.5 на 6 часов.</div>
+          </div>
+          <div class="msg-header red" style="margin-top:8px">🧬 &nbsp;МУТАЦИЯ ШТАММА · ВСЕМИРНАЯ ВОЛНА</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Штамм X-77 эволюционировал.<br><br>
+            Мир в хаосе. Иммунные системы<br>
+            не успевают. <span class="hl-red">Каждое заражение сейчас<br>
+            в 1.5 раза мощнее</span>.<br><br>
+            Действуй. У тебя <span class="hl-orange">6 часов</span> пока<br>
+            событие активно.
+          </div>
+          <div class="badge-row">
+            <span class="badge red">×1.5 ЗАРАЖЕНИЕ</span>
+            <span class="badge orange">МУТАЦИЯ</span>
+            <span class="badge purple">ВСЕМИРНО</span>
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn hot">⚡ ИСПОЛЬЗОВАТЬ МУТАЦИЮ</div>
+        </div>
+        <div class="inline-row c2">
+          <div class="inline-btn">📊 Мир сейчас</div>
+          <div class="inline-btn ghost">Позже</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 10: PARTNER TASK -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>10</span> — партнёрское задание (монетизация)</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">🎯</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● MISSION AVAILABLE</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header yellow">🎯 &nbsp;ЗАДАНИЕ · ПОЛУЧИ ОЧКИ ВЫЖИВАНИЯ</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">
+            Разведка нашла союзников.<br><br>
+            Вступи в их лагерь и отметься —<br>
+            они поделятся <span class="hl-yellow">ресурсами для выживания</span>.<br>
+          </div>
+          <div style="background:#1A1500;border:1px solid #3A3000;border-radius:10px;padding:10px 12px;margin:8px 0">
+            <div style="font-family:var(--mono);font-size:9px;color:#8A7000;letter-spacing:1px;margin-bottom:6px">▸ ЗАДАНИЕ</div>
+            <div style="font-family:var(--body);font-size:14px;font-weight:600;color:#ddd">
+              📢 Подпишись на <span style="color:var(--yellow)">@TechChannel</span><br>
+              и поставь реакцию на 2 любых поста
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+              <span class="badge yellow">+750 POINTS</span>
+              <span style="font-family:var(--mono);font-size:9px;color:var(--text-dimmer)">⏱ осталось 23:14:00</span>
+            </div>
+          </div>
+          <div class="msg-body" style="font-size:13px;color:var(--text-dim)">
+            Points тратятся на мутации, ускорение<br>таймера и усиление штамма.
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn" style="background:rgba(255,224,0,0.12);border-color:rgba(255,224,0,0.35);color:var(--yellow);font-weight:700">🎯 Выполнить задание</div>
+        </div>
+        <div class="inline-row c2">
+          <div class="inline-btn">💰 Все задания</div>
+          <div class="inline-btn ghost">↩ Назад</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 11: MUTATION TREE -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>11</span> — дерево мутаций</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">🧬</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● XP: 12 / LEVEL 2</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header orange">🧬 &nbsp;МУТАЦИИ · УРОВЕНЬ 2</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div class="msg-body">XP: <span class="hl-yellow">12 / 20</span> &nbsp;▓▓▓▓▓▓░░░░</div>
+          <div class="mutation-list">
+            <div class="mutation-item">
+              <span class="mut-icon">✅</span>
+              <span class="mut-name">Скорость</span>
+              <span class="mut-effect">— +1 ч за каждое заражение</span>
+            </div>
+            <div class="mutation-item">
+              <span class="mut-icon">🔓</span>
+              <span class="mut-name">Массовый сброс</span>
+              <span class="mut-effect">— ссылка на 3 человека сразу</span>
+            </div>
+            <div class="mutation-item">
+              <span class="mut-icon">🔒</span>
+              <span class="mut-name">Цепная реакция</span>
+              <span class="mut-effect">— +5 XP нужно / вирус идёт вглубь</span>
+            </div>
+          </div>
+          <div class="msg-body" style="font-size:13px;margin-top:8px;color:var(--text-dim)">
+            Следующая ветка: <span class="hl-orange">Устойчивость</span> — таймер деградирует медленнее
+          </div>
+          <div class="msg-time">только что</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c1">
+          <div class="inline-btn warn">🔓 Разблокировать «Массовый сброс» (8 XP)</div>
+        </div>
+        <div class="inline-row c2">
+          <div class="inline-btn">🎯 Задания за XP</div>
+          <div class="inline-btn ghost">↩ Назад</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 12: LEADERBOARD -->
+  <div class="screen-wrap">
+    <div class="screen-label">SCREEN <span>12</span> — рейтинг / топ</div>
+    <div class="phone">
+      <div class="phone-bar">
+        <div class="phone-avatar">🏆</div>
+        <div class="phone-info">
+          <div class="phone-name">LastContact</div>
+          <div class="phone-status">● LIVE RANKING</div>
+        </div>
+      </div>
+      <div class="phone-body">
+        <div class="msg">
+          <div class="msg-header yellow">🏆 &nbsp;ТОП РАСПРОСТРАНИТЕЛЕЙ · МИР</div>
+          <div class="msg-divider">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#1A1500;border-radius:8px;border:1px solid #3A3000">
+              <span style="font-family:var(--mono);font-size:12px;color:var(--yellow);width:20px">#1</span>
+              <span style="font-family:var(--body);font-size:14px;font-weight:600;flex:1">@virus_king</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--red)">1 247 ☣️</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#140A1A;border-radius:8px;border:1px solid #2E1A3A">
+              <span style="font-family:var(--mono);font-size:12px;color:#A060FF;width:20px">#2</span>
+              <span style="font-family:var(--body);font-size:14px;font-weight:600;flex:1">@spreader99</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--purple)">891 ☣️</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0A1200;border-radius:8px;border:1px solid #1A2E1A">
+              <span style="font-family:var(--mono);font-size:12px;color:#60C060;width:20px">#3</span>
+              <span style="font-family:var(--body);font-size:14px;font-weight:600;flex:1">@chain_master</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--green-dim)">744 ☣️</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#111;border-radius:8px;border:1px solid #222">
+              <span style="font-family:var(--mono);font-size:12px;color:var(--text-dim);width:20px">#4</span>
+              <span style="font-family:var(--body);font-size:14px;color:var(--text-dim);flex:1">@nachtpilot</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim)">612 ☣️</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#1A0D00;border-radius:8px;border:1px solid #3A2200">
+              <span style="font-family:var(--mono);font-size:12px;color:var(--orange);width:20px">#8 241</span>
+              <span style="font-family:var(--body);font-size:14px;font-weight:700;flex:1;color:var(--orange)">ТЫ</span>
+              <span style="font-family:var(--mono);font-size:11px;color:var(--orange)">4 ☣️</span>
+            </div>
+          </div>
+          <div class="msg-time">обновлено 1 мин назад</div>
+        </div>
+      </div>
+      <div class="inline-kb">
+        <div class="inline-row c3">
+          <div class="inline-btn">🌍 Мир</div>
+          <div class="inline-btn info">🏙️ Город</div>
+          <div class="inline-btn">🌐 Страна</div>
+        </div>
+        <div class="inline-row c1">
+          <div class="inline-btn hot">☣️ Подняться в топе</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════ COPY TEXT ═══════════════ -->
+
+<div class="copy-section">
+  <div class="copy-title">ГОТОВЫЕ ТЕКСТЫ СООБЩЕНИЙ</div>
+  <div class="copy-grid">
+
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">☣️</span>
+        <span class="copy-card-title">01 · /START · ПЕРВОЕ ЗАРАЖЕНИЕ</span>
+      </div>
+      <div class="copy-card-body"><span class="line-red">☣️ ШТАММ X-77 · ИНФИЦИРОВАН</span>
+<span class="line-dim">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</span>
+
+Поздравляю. Ты только что подхватил нечто,
+от чего нет вакцины.
+
+У тебя <span class="line-red">60 часов</span> пока не началась деградация.
+Единственный способ выжить —
+<span class="line-orange">распространить штамм</span> как можно быстрее.
+
+<span class="line-dim">████████████████████ 100% VITA</span>
+<span class="line-red">⏱ 11:59:42 · ДО РАСПАДА</span>
+
+<span class="line-dim">[☣️ ЗАРАЖЁН] [ЦЕПОЧКА #1] [НОСИТЕЛЬ]</span>
+</div>
+    </div>
+
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">🧬</span>
+        <span class="copy-card-title">04 · КОД РАСПРОСТРАНЕНИЯ</span>
+      </div>
+      <div class="copy-card-body"><span class="line-red">🧬 КОД РАСПРОСТРАНЕНИЯ · АКТИВЕН</span>
+<span class="line-dim">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</span>
+
+Биологический пакет собран.
+Доставь его <span class="line-red">любым способом</span>.
+
+Нажми <span class="line-orange">«🧬 Мои контакты»</span> ниже —
+или скопируй ссылку вручную.
+
+Каждый открывший — <span class="line-green">+4 часа</span> тебе.
+Каждый просроченный — минус один выживший.
+
+<span class="line-dim">▸ ПЕРСОНАЛЬНЫЙ ШТАММ-ЛИНК</span>
+<span class="line-red">t.me/LastContact_bot?start=REF_ID</span>
+
+<span class="line-dim">[+4 Ч ЗА КЛИК] [ТОЛЬКО УНИКАЛЬНЫЕ]</span>
+</div>
+    </div>
+
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">🚨</span>
+        <span class="copy-card-title">03 · КРИТИЧЕСКИЙ ТАЙМЕР · 30 МИН</span>
+      </div>
+      <div class="copy-card-body"><span class="line-red">💀 КРИТИЧЕСКИЙ УРОВЕНЬ</span>
+<span class="line-dim">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</span>
+
+Слышишь? Это твои клетки.
+
+У тебя почти не осталось времени.
+Ещё одно заражение даст <span class="line-red">+4 часа</span>.
+Или ты станешь <span class="line-purple">следующим зомби</span>
+в статистике.
+
+<span class="line-dim">▓▓░░░░░░░░░░░░░░░░░░ 15% VITA</span>
+<span class="line-red">🚨 00:28:03 · ОСТАЛОСЬ</span>
+</div>
+    </div>
+
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">✅</span>
+        <span class="copy-card-title">05 · ПУШ: НОВЫЙ НОСИТЕЛЬ</span>
+      </div>
+      <div class="copy-card-body"><span class="line-green">✅ ШТАММ ПРИНЯТ · НОВЫЙ НОСИТЕЛЬ</span>
+<span class="line-dim">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</span>
+
+Ещё один.
+
+@alex_kr открыл твою ссылку
+и уже <span class="line-red">заражён</span>. Твоя цепочка растёт.
+
+<span class="line-green">+3:00:00</span> к таймеру.
+Всего носителей в ветке: <span class="line-orange">4</span>
+
+<span class="line-dim">◉ ТЫ</span>
+<span class="line-dim"> └─ </span><span class="line-orange">◉ @masha_v</span>
+<span class="line-dim">     └─ </span><span class="line-green">◉ @alex_kr ← НОВЫЙ</span>
+</div>
+    </div>
+
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">💀</span>
+        <span class="copy-card-title">06 · ПРЕВРАЩЕНИЕ В ЗОМБИ</span>
+      </div>
+      <div class="copy-card-body"><span class="line-purple">💀 ДЕГРАДАЦИЯ ЗАВЕРШЕНА · ЗОМБИ</span>
+<span class="line-dim">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</span>
+
+Время вышло.
+
+Ты больше не человек — ты зомби.
+Вирус управляет тобой хаотично.
+
+Но игра не закончена.
+Заразь ещё <span class="line-purple">5 человек</span> в этом
+состоянии — и ты <span class="line-orange">вернёшься</span>.
+
+<span class="line-dim">[ЗОМБИ] [50% ЭФФЕКТИВН.] [0/5 ДО ВОЗВРАТА]</span>
+</div>
+    </div>
+
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">⚡</span>
+        <span class="copy-card-title">09 · ГЛОБАЛЬНОЕ СОБЫТИЕ: МУТАЦИЯ</span>
+      </div>
+      <div class="copy-card-body"><span class="line-purple">🧬 МУТАЦИЯ ШТАММА · ВСЕМИРНАЯ ВОЛНА</span>
+<span class="line-dim">┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄</span>
+<span class="line-purple">⚡ СОБЫТИЕ АКТИВНО · 05:42:00</span>
+
+Штамм X-77 эволюционировал.
+
+Мир в хаосе. Иммунные системы
+не успевают. <span class="line-red">Каждое заражение сейчас
+в 1.5 раза мощнее</span>.
+
+Действуй. У тебя <span class="line-orange">6 часов</span> пока
+событие активно.
+
+<span class="line-dim">[×1.5 ЗАРАЖЕНИЕ] [МУТАЦИЯ] [ВСЕМИРНО]</span>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="copy-section" style="margin-top:32px">
+  <div class="copy-title">МАКЕТ VS КОД (апрель 2026)</div>
+  <div class="copy-grid">
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">✓</span>
+        <span class="copy-card-title">Есть в MVP (бот)</span>
+      </div>
+      <div class="copy-card-body"><span class="line-dim">01</span> Первое заражение / карточка
+<span class="line-dim">02</span> Дашборд заражённого · /start · /status
+<span class="line-dim">04</span> Экран передачи (ссылка + нативный шаринг)
+<span class="line-dim">—</span> Предупреждения таймера (2ч / 1ч / 30м / 10м) — отдельные пуши
+<span class="line-dim">06</span> Зомби — упрощённо (без «5 заражений до возврата»)
+<span class="line-dim">—</span> Блок «от чего растёт время» — в карточке, «Сколько осталось», Mini App API
+
+<span class="line-green">Mini App</span> таймер + тот же блок источников (поле API)</div>
+    </div>
+    <div class="copy-card">
+      <div class="copy-card-header">
+        <span style="font-size:14px">○</span>
+        <span class="copy-card-title">Только макет / позже</span>
+      </div>
+      <div class="copy-card-body"><span class="line-orange">03</span> Критический экран как отдельная карточка — частично (тексты пушей + Mini App при низком времени)
+<span class="line-orange">05</span> Пуш «новый носитель» — <span class="line-green">да</span> (текст + бонус/ветка; без дерева @ как в макете)
+<span class="line-orange">07</span> Иммунитет — фракция не в сценарии бота
+<span class="line-orange">08–12</span> Мир, глобальный ивент, партнёрка, мутации, топ — <span class="line-red">заглушки</span> или ADR 002
+
+<span class="line-purple">SCREEN 04</span> в макете: «Скопировать» / «Назад» — в продукте убраны по UX</div>
+    </div>
+  </div>
+  <p style="font-family:var(--mono);font-size:10px;color:var(--text-dimmer);max-width:1400px;margin:16px auto 0;padding:0 4px">Базовый таймер в конфиге: 72 ч (launch 72 ч). Бонус за реферал: +4 ч. Числа в экранах приведены к продукту где отмечено.</p>
+</div>
+
+</body>
+</html>

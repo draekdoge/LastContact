@@ -1,0 +1,132 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-virus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-virus}
+      POSTGRES_DB: ${POSTGRES_DB:-virus}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-virus} -d ${POSTGRES_DB:-virus}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    # С хоста: ${REDIS_HOST_PORT:-16379} — чтобы не конфликтовать с локальным Redis на 6379
+    ports:
+      - "${REDIS_HOST_PORT:-16379}:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # Одноразово применяет Alembic до api/worker/beat (иначе таблиц нет)
+  migrate:
+    build: .
+    entrypoint: []
+    command: >
+      sh -c "python /app/scripts/wait_for_port.py postgres 5432 && alembic upgrade head"
+    environment:
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # HTTP API (Mini App / health), без Telegram long polling в процессе
+  api:
+    build: .
+    entrypoint: []
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  # Telegram-бот: webhook (HTTPS за reverse proxy) или polling при TELEGRAM_DELIVERY=polling
+  bot:
+    build: .
+    entrypoint: []
+    command: uvicorn app.bot_main:app --host 0.0.0.0 --port 8080
+    ports:
+      - "8080:8080"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  worker:
+    build: .
+    entrypoint: []
+    # solo: без fork воркеров — иначе наследуется мёртвый пул asyncpg и падает TCPTransport closed
+    command: celery -A worker.celery_app worker --loglevel=info --pool=solo
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  beat:
+    build: .
+    entrypoint: []
+    command: celery -A worker.celery_app beat --loglevel=info
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-virus}:${POSTGRES_PASSWORD:-virus}@postgres:5432/${POSTGRES_DB:-virus}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      redis:
+        condition: service_started
+
+volumes:
+  pg_data:
